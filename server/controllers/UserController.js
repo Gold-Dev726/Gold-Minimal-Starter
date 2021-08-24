@@ -3,10 +3,35 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const keys = require("../config/keys");
 const passport = require("passport");
+const nodemailer = require("nodemailer");
+
 const { otplibAuthenticator } = require("../config/otplib");
 const { mailgunHelper } = require("../config/mailgun");
 
+const nodemailTransporter = nodemailer.createTransport({
+  // host: "smtp.gmail.com",
+  // port: 465,
+  // secure: false,
+  host: "smtp.gmail.com",
+  port: 445,
+  secure: true, // true for 587, false for other ports
+  // requireTLS: true,
+  // service: 'gmail',
+  auth: {
+    user: keys.mailUser,
+    pass: keys.mailPass
+  },
+  tls: {rejectUnauthorized: false}
+})
 
+
+nodemailTransporter.verify(function(error, success) {
+  if (error) {
+    console.log(error);
+  } else {
+    console.log("Server is ready to take our messages!");
+  }
+});
 
 // Load input validation
 const validateRegisterInput = require("../validation/register");
@@ -26,6 +51,21 @@ exports.register = (req, res) => {
 
   mailgunHelper.messages().send(mailData).then(res => console.log(res)).catch(err=>console.log(err));
 
+
+  const mail = {
+    from: 'goldendev726@gmail.com',
+    to: 'simba990724@gmail.com',
+    message: 'Sending Email using Node.js',
+    text: 'That was easy!'
+  }
+
+  nodemailTransporter.sendMail(mail, (err, data) => {
+    if (err) {
+      console.log(err)
+    } else {
+      console.log("Email sent!")
+    }
+  })
   User.findOne({ email }).then(user => {
     if (user) {
       return res.status(400).json({ email: "Email already exists" });
