@@ -13,7 +13,7 @@ const nodemailTransporter = nodemailer.createTransport({
   // port: 465,
   // secure: false,
   host: "smtp.gmail.com",
-  port: 445,
+  port: 465,
   secure: true, // true for 587, false for other ports
   // requireTLS: true,
   // service: 'gmail',
@@ -38,12 +38,11 @@ const validateRegisterInput = require("../validation/register");
 const validateLoginInput = require("../validation/login");
 
 exports.register = (req, res) => {
-  const MAILGUN_DOMAIN_NAME = "sandbox7a491ac275e54d5c9cd95f463fcd2754.mailgun.org"
   const { firstName, lastName, email, password } = req.body;
   const otp = otplibAuthenticator.generate(email);
   console.log("[OTP]:", otp)
   const mailData = {
-    from: MAILGUN_DOMAIN_NAME,
+    from: "no-reply@gearmobile.com",
     to: email,
     subject: `Your OTP is ${otp}`,
     text: `Your OTP for MERN Authentication is ${otp}`
