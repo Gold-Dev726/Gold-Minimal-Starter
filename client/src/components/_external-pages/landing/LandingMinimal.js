@@ -28,6 +28,7 @@ const CARDS = [
 const shadowIcon = (color) => `drop-shadow(2px 2px 2px ${alpha(color, 0.48)})`;
 
 const RootStyle = styled('div')(({ theme }) => ({
+  background: 'url(/static/home/foxtail-bg.svg)',
   paddingTop: theme.spacing(15),
   [theme.breakpoints.up('md')]: {
     paddingBottom: theme.spacing(15)
